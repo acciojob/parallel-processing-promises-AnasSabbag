@@ -46,4 +46,5 @@ function downloadImages(){
 
 }
 downloadImages();
-
+const btn = document.getElementById("download-images-button");
+btn.addEventListener("click", downloadImages);
