@@ -1,5 +1,7 @@
-//your JS code here. If required.
 const output = document.getElementById("output");
+const btn = document.getElementById("download-images-button");
+const loadingDiv = document.getElementById("loading");
+const errorDiv = document.getElementById("error");
 
 const images = [
   { url: "https://picsum.photos/id/237/200/300" },
@@ -7,43 +9,33 @@ const images = [
   { url: "https://picsum.photos/id/239/200/300" },
 ];
 
-function downloadImage(image) {
-	return new Promise((resolve,reject)=>{
-		const img= new Image();
-		img.src= image;
-		img.onload=()=>resolve(image);
-		img.onerror=()=>reject(`Failed to load image from ${image}`);
-	
-	});
+function downloadImage(imageUrl) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.src = imageUrl;
+    img.onload = () => resolve(img);
+    img.onerror = () => reject(`Failed to load image from ${imageUrl}`);
+  });
 }
 
-function downloadImages(){
-	//show loading spinner
-	let prom =[];
-	images.forEach((image)=>{
-		prom.push(downloadImage(image.url));
-	});
-	
-	output.innerHTML = ``;
+function downloadImages() {
+  
+  loadingDiv.style.display = "block";
+  errorDiv.textContent = "";
+  output.innerHTML = "";
 
-	Promise.all(prom).then((values)=>{
-		document.getElementById("loading").style.display="none";
-		values.forEach((url)=>{
-			const img = document.createElement('img');
-	        img.src = url;
-			img.alt="not loaded"
-	        output.appendChild(img);	
-		});
-		
-		
-	}).catch((err)=>{
-		document.getElementById("loading").style.display="none";
-		let errDiv = document.getElementById("error");
-		errDiv.innerHTML =`<p>${err}<p>`;
-			
-	});
+  const imagePromises = images.map((image) => downloadImage(image.url));
 
+  Promise.all(imagePromises)
+    .then((imgElements) => {
+      loadingDiv.style.display = "none"; 
+      imgElements.forEach((img) => output.appendChild(img)); 
+    })
+    .catch((err) => {
+      loadingDiv.style.display = "none"; 
+      errorDiv.textContent = err;
+    });
 }
-downloadImages();
-const btn = document.getElementById("download-images-button");
+
+
 btn.addEventListener("click", downloadImages);
