@@ -2,7 +2,7 @@ const output = document.getElementById("output");
 const btn = document.getElementById("download-images-button");
 const loadingDiv = document.getElementById("loading");
 const errorDiv = document.getElementById("error");
-
+loadingDiv.style.display="none";
 const images = [
   { url: "https://picsum.photos/id/237/200/300" },
   { url: "https://picsum.photos/id/238/200/300" },
@@ -23,7 +23,7 @@ function downloadImages() {
   loadingDiv.style.display = "block";
   errorDiv.textContent = "";
   output.innerHTML = "";
-
+  
   const imagePromises = images.map((image) => downloadImage(image.url));
 
   Promise.all(imagePromises)
@@ -35,6 +35,7 @@ function downloadImages() {
       loadingDiv.style.display = "none"; 
       errorDiv.textContent = err;
     });
+	
 }
 
 
